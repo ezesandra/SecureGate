@@ -1,0 +1,59 @@
+:root {
+    /* Brand Colors */
+    --color-brand: hsl(154, 64%, 37%);
+    --color-brand-hover: hsl(154, 64%, 30%);
+    --color-brand-subtle: hsl(148, 60%, 64%);
+
+    /* Text Colors */
+    --color-text-primary: hsl(150, 20%, 10%);
+    --color-text-secondary: hsl(0, 0%, 28%);
+    --color-text-inverse: hsl(0, 0%, 100%);
+
+    /* Surface Colors */
+    --color-surface: hsl(136, 65%, 97%);
+    --color-surface-elevated: hsl(0, 0%, 100%);
+    --color-surface-hover: hsl(136, 28%, 92%);
+
+    /* Feedback Colors */
+    --color-success: hsl(154, 64%, 37%);
+    --color-error: hsl(3, 100%, 75%);
+    --color-warning: hsl(45, 100%, 50%);
+
+    /* Border Colors */
+    --color-border: hsl(0, 0%, 78%);
+    --color-border-focus: hsl(154, 64%, 37%);
+
+    /* Aliases (matching design-system.md references) */
+    --color-primary-hover: var(--color-brand-hover);
+    --color-primary-foreground: var(--color-onprimary);
+    --color-primary-foreground-hover: hsl(154, 64%, 90%);
+
+    /* Referenced by design-system.md and aliases */
+    --color-primary: var(--color-brand);
+    --color-onprimary: var(--color-text-inverse);
+}
+
+[data-theme="dark"] {
+    --color-brand: hsl(154, 64%, 47%);
+    --color-brand-hover: hsl(154, 64%, 57%);
+    --color-brand-subtle: hsl(157, 100%, 16%);
+
+    --color-text-primary: hsl(142, 17%, 88%);
+    --color-text-secondary: hsl(0, 0%, 78%);
+    --color-text-inverse: hsl(150, 11%, 18%);
+
+    --color-surface: hsl(150, 20%, 5%);
+    --color-surface-elevated: hsl(150, 20%, 10%);
+    --color-surface-hover: hsl(150, 20%, 15%);
+
+    --color-border: hsl(0, 0%, 28%);
+    --color-border-focus: var(--color-brand);
+
+    /* Aliases - Dark */
+    --color-primary-hover: var(--color-brand-hover);
+    --color-primary-foreground: var(--color-onprimary);
+    --color-primary-foreground-hover: hsl(154, 50%, 80%);
+
+    --color-primary: var(--color-brand);
+    --color-onprimary: hsl(155, 100%, 11%);
+}

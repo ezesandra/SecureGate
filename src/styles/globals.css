@@ -1,0 +1,16 @@
+@import '../../Tokens/colors.css';
+@import '../../Tokens/typography.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
