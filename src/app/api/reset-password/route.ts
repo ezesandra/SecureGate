@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { csrfToken } from 'next-auth/csrf'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { strictRatelimit } from '@/lib/rate-limit'
@@ -23,11 +22,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         { error: 'Invalid input', fields: result.error.flatten().fieldErrors },
         { status: 400 }
       )
-    }
-
-    const tokenData = await csrfToken({ req })
-    if (body.csrfToken !== tokenData) {
-      return NextResponse.json({ error: 'Invalid request' }, { status: 403 })
     }
 
     const { token, password } = result.data

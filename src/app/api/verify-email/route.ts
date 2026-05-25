@@ -23,8 +23,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     if (verificationToken.expires < new Date()) {
+      const email = verificationToken.identifier
       await prisma.verificationToken.delete({ where: { token: hashed } })
-      return NextResponse.json({ error: MESSAGES.VERIFICATION_INVALID }, { status: 400 })
+      return NextResponse.json(
+        { error: MESSAGES.VERIFICATION_INVALID, email },
+        { status: 400 }
+      )
     }
 
     await prisma.user.update({

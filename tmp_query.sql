@@ -1,0 +1,1 @@
+SELECT id,email,token,expires FROM "PasswordResetToken" WHERE email='ezesandra704@gmail.com' ORDER BY expires DESC LIMIT 5;

@@ -10,27 +10,19 @@ import Alert from '@/components/ui/Alert/Alert'
 
 import { MESSAGES } from '@/constants/messages'
 
-import styles from './page.module.css'
+import styles from '../auth.module.css'
 import Link from 'next/link'
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [password, setPassword] = useState('')
-  const [csrfToken, setCsrfToken] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [nameError, setNameError] = useState<string | null>(null)
   const [emailError, setEmailError] = useState<string | null>(null)
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const router = useRouter()
-
-  useEffect(() => {
-    fetch('/api/auth/csrf')
-      .then((res) => res.json())
-      .then((data) => setCsrfToken(data.csrfToken))
-      .catch(() => {})
-  }, [])
 
   // Fallback focus for client-side navigation where autoFocus may not work
   useEffect(() => {
@@ -92,7 +84,7 @@ export default function SignupPage() {
       return
     }
 
-    const data = { ...Object.fromEntries(formData), csrfToken }
+    const data = { ...Object.fromEntries(formData) }
 
     const res = await fetch('/api/signup', {
       method: 'POST',
@@ -108,7 +100,7 @@ export default function SignupPage() {
       return
     }
 
-    router.push('/verify-email/pending')
+    router.push(`/verify-email/pending?email=${encodeURIComponent(emailVal)}`)
   }
 
   return (

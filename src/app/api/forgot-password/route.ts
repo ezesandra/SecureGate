@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { csrfToken } from 'next-auth/csrf'
 import { prisma } from '@/lib/prisma'
 import { strictRatelimit } from '@/lib/rate-limit'
 import { generateToken, hashToken } from '@/lib/generateToken'
@@ -25,11 +24,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       )
     }
 
-    const tokenData = await csrfToken({ req })
-    if (body.csrfToken !== tokenData) {
-      return NextResponse.json({ error: 'Invalid request' }, { status: 403 })
-    }
-
     const { email } = result.data
 
     const user = await prisma.user.findUnique({
@@ -48,7 +42,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         },
       })
 
-      await sendPasswordResetEmail(email, user.name, rawToken)
+      void sendPasswordResetEmail(email, user.name, rawToken).catch((error) => {
+        console.error('Password reset email failed:', error)
+      })
     }
 
     return NextResponse.json({ message: MESSAGES.FORGOT_SUCCESS }, { status: 200 })

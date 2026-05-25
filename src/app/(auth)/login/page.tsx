@@ -9,22 +9,45 @@ import PasswordInput from '@/components/ui/PasswordInput/PasswordInput'
 import Button from '@/components/ui/Button/Button'
 import Alert from '@/components/ui/Alert/Alert'
 import { MESSAGES } from '@/constants/messages'
-import styles from '../signup/page.module.css'
+import styles from '../auth.module.css'
 import Link from 'next/link'
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validateEmail(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return 'Email address is required'
+  if (!emailRegex.test(trimmed)) return 'Enter a valid email address'
+  return null
+}
+
+function validatePassword(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return 'Password is required'
+  return null
+}
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
   const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setIsLoading(true)
     setError(null)
 
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
+    const emailErr = validateEmail(email)
+    const passwordErr = validatePassword(password)
+    setEmailError(emailErr)
+    setPasswordError(passwordErr)
+
+    if (emailErr || passwordErr) return
+
+    setIsLoading(true)
 
     const result = await signIn('credentials', {
       email,
@@ -33,7 +56,7 @@ export default function LoginPage() {
     })
 
     if (result?.error) {
-      setError(MESSAGES.AUTH_ERROR)
+      setError(result.error === 'CredentialsSignin' ? MESSAGES.AUTH_ERROR : result.error)
       setIsLoading(false)
       return
     }
@@ -57,6 +80,13 @@ export default function LoginPage() {
             required
             autoComplete="email"
             disabled={isLoading}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (emailError) setEmailError(validateEmail(e.target.value))
+            }}
+            onBlur={(e) => setEmailError(validateEmail(e.target.value))}
+            error={emailError || undefined}
           />
           <PasswordInput
             id="password"
@@ -65,6 +95,13 @@ export default function LoginPage() {
             required
             autoComplete="current-password"
             disabled={isLoading}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+              if (passwordError) setPasswordError(null)
+            }}
+            onBlur={(e) => setPasswordError(validatePassword(e.target.value))}
+            error={passwordError || undefined}
           />
           <Button type="submit" isLoading={isLoading} variant="primary">
             Sign in

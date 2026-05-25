@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { csrfToken } from 'next-auth/csrf'
 import bcrypt from 'bcryptjs'
 
 import { prisma } from '@/lib/prisma'
@@ -20,11 +19,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         { error: 'Invalid input', fields: result.error.flatten().fieldErrors },
         { status: 400 }
       )
-    }
-
-    const token = await csrfToken({ req })
-    if (body.csrfToken !== token) {
-      return NextResponse.json({ error: 'Invalid request' }, { status: 403 })
     }
 
     const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1'
@@ -60,7 +54,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         },
       })
 
-      await sendVerificationEmail(email, name, rawToken)
+      try {
+        await sendVerificationEmail(email, name, rawToken)
+      } catch (error) {
+        console.error('Verification email failed:', error)
+        return NextResponse.json({ error: 'Failed to send verification email. Please try again.' }, { status: 500 })
+      }
     }
 
     // Always return success even if email exists
