@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import styles from './layout.module.css'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={styles.container}>
-      <Link href="/" className={styles.backLink}>← Back to home</Link>
+    <div className="flex min-h-screen items-center justify-center bg-surface p-4">
+      <Link href="/" className="absolute left-6 top-6 text-sm text-blue-400 hover:underline">
+        &larr; Back to home
+      </Link>
       {children}
     </div>
   )

@@ -1,25 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Input from '@/components/ui/Input/Input'
-import Button from '@/components/ui/Button/Button'
-import Alert from '@/components/ui/Alert/Alert'
-import { MESSAGES } from '@/constants/messages'
-import styles from '../login/page.module.css'
+import { useState } from 'react'
+import Input from '@/components/ui/Input'
+import Button from '@/components/ui/Button'
+import Alert from '@/components/ui/Alert'
 import Link from 'next/link'
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  const [csrfToken, setCsrfToken] = useState('')
-
-  useEffect(() => {
-    fetch('/api/auth/csrf')
-      .then((res) => res.json())
-      .then((data) => setCsrfToken(data.csrfToken))
-      .catch(() => {})
-  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -28,9 +18,9 @@ export default function ForgotPasswordPage() {
     setSuccess(null)
 
     const formData = new FormData(e.currentTarget)
-    const data = { ...Object.fromEntries(formData), csrfToken }
+    const data = { ...Object.fromEntries(formData) }
 
-    const res = await fetch('/api/forgot-password', {
+    const res = await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -39,7 +29,7 @@ export default function ForgotPasswordPage() {
     const json = await res.json()
 
     if (!res.ok) {
-      setError(json.error || MESSAGES.GENERIC_ERROR)
+      setError(json.error || 'Something went wrong. Please try again later.')
       setIsLoading(false)
       return
     }
@@ -49,14 +39,14 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className={styles.page}>
-      <div className={styles.card}>
-        <h1 className={styles.title}>Reset Password</h1>
+    <div className="w-full max-w-sm">
+      <div className="rounded-lg bg-surface-card p-8 shadow-lg">
+        <h1 className="mb-6 text-center text-2xl font-bold text-white">Reset Password</h1>
 
         {error && <Alert variant="error">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <Input
             id="email"
             label="Email address"
@@ -70,10 +60,12 @@ export default function ForgotPasswordPage() {
             Send reset link
           </Button>
         </form>
-        <div className={styles.links}>
-          <Link href="/login" className={styles.link}>Back to login</Link>
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <Link href="/login" className="text-sm text-blue-400 hover:underline">
+            Back to login
+          </Link>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

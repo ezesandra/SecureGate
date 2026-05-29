@@ -1,7 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
-import styles from './page.module.css'
 import LogoutButton from './LogoutButton'
 import Link from 'next/link'
 
@@ -21,18 +20,24 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Link href="/" className={styles.backLink}>← Back to home</Link>
-          <h1 className={styles.title}>Dashboard</h1>
+    <div className="min-h-screen bg-surface">
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        <div className="mb-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-sm text-blue-400 hover:underline">
+              &larr; Back to home
+            </Link>
+            <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          </div>
+          <LogoutButton />
         </div>
-        <LogoutButton />
+        <div className="rounded-lg bg-surface-card p-8 shadow-lg">
+          <h2 className="mb-2 text-xl font-semibold text-white">
+            Welcome back, {session.user.name || session.user.email}!
+          </h2>
+          <p className="text-gray-400">This is a protected page. Your session is active.</p>
+        </div>
       </div>
-      <div className={styles.card}>
-        <h2 className={styles.subtitle}>Welcome back, {session.user.name || session.user.email}!</h2>
-        <p className={styles.text}>This is a protected page. Your session is active.</p>
-      </div>
-    </main>
+    </div>
   )
 }

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
-import { MESSAGES } from '@/constants/messages'
 
 const schema = z.object({
   token: z.string().min(1, 'Token is required'),
@@ -28,12 +27,12 @@ export async function POST(req: NextRequest) {
     })
 
     if (!resetTokenRecord) {
-      return NextResponse.json({ error: MESSAGES.RESET_INVALID }, { status: 400 })
+      return NextResponse.json({ error: 'This reset link is invalid.' }, { status: 400 })
     }
 
     if (resetTokenRecord.expires < new Date()) {
       await prisma.passwordResetToken.delete({ where: { token } })
-      return NextResponse.json({ error: MESSAGES.RESET_INVALID }, { status: 400 })
+      return NextResponse.json({ error: 'This reset link has expired. Please request a new one.' }, { status: 400 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -47,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: MESSAGES.GENERIC_ERROR }, { status: 500 })
+    console.error('Reset password error:', error)
+    return NextResponse.json({ error: 'Something went wrong. Please try again later.' }, { status: 500 })
   }
 }

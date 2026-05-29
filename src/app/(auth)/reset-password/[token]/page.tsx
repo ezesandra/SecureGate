@@ -1,30 +1,24 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import PasswordInput from '@/components/ui/PasswordInput'
 import Button from '@/components/ui/Button'
+import Alert from '@/components/ui/Alert'
 import Link from 'next/link'
-import { Suspense } from 'react'
 
-function ResetPasswordForm() {
+export default function ResetPasswordPage({ params }: { params: { token: string } }) {
+  const { token } = params
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isExpired, setIsExpired] = useState(false)
   const [password, setPassword] = useState('')
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-
-    if (!token) {
-      setError('Invalid token')
-      setIsLoading(false)
-      return
-    }
 
     const res = await fetch('/api/auth/reset-password', {
       method: 'POST',
@@ -36,6 +30,9 @@ function ResetPasswordForm() {
 
     if (!res.ok) {
       setError(json.error || 'Something went wrong. Please try again later.')
+      if (json.error && json.error.includes('expired')) {
+        setIsExpired(true)
+      }
       setIsLoading(false)
       return
     }
@@ -48,10 +45,13 @@ function ResetPasswordForm() {
       <div className="rounded-lg bg-surface-card p-8 shadow-lg">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">Set new password</h1>
 
-        {error && (
-          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-            {error}
-          </div>
+        {error && <Alert variant="error">{error}</Alert>}
+        {isExpired && (
+          <p className="mt-3 text-sm">
+            <Link href="/forgot-password" className="text-blue-400 hover:underline">
+              Request a new reset link
+            </Link>
+          </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -76,16 +76,6 @@ function ResetPasswordForm() {
           </Link>
         </div>
       </div>
-    </div>
-  )
-}
-
-export default function ResetPasswordPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-surface p-4">
-      <Suspense fallback={<div className="rounded-lg bg-surface-card p-8 text-white">Loading...</div>}>
-        <ResetPasswordForm />
-      </Suspense>
     </div>
   )
 }

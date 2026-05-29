@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { hashToken } from '@/lib/generateToken'
-import { MESSAGES } from '@/constants/messages'
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
@@ -9,22 +7,23 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const { token } = body
 
     if (!token || typeof token !== 'string') {
-      return NextResponse.json({ error: MESSAGES.VERIFICATION_INVALID }, { status: 400 })
+      return NextResponse.json({ error: 'This verification link is invalid.' }, { status: 400 })
     }
 
-    const hashed = hashToken(token)
-
     const verificationToken = await prisma.verificationToken.findUnique({
-      where: { token: hashed },
+      where: { token },
     })
 
     if (!verificationToken) {
-      return NextResponse.json({ error: MESSAGES.VERIFICATION_INVALID }, { status: 400 })
+      return NextResponse.json({ error: 'This verification link is invalid.' }, { status: 400 })
     }
 
     if (verificationToken.expires < new Date()) {
-      await prisma.verificationToken.delete({ where: { token: hashed } })
-      return NextResponse.json({ error: MESSAGES.VERIFICATION_INVALID }, { status: 400 })
+      return NextResponse.json({
+        error: 'This verification link has expired.',
+        code: 'EXPIRED',
+        email: verificationToken.identifier,
+      }, { status: 400 })
     }
 
     await prisma.user.update({
@@ -32,11 +31,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       data: { emailVerified: new Date() },
     })
 
-    await prisma.verificationToken.delete({ where: { token: hashed } })
+    await prisma.verificationToken.delete({ where: { token } })
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: MESSAGES.GENERIC_ERROR }, { status: 500 })
+    return NextResponse.json({ error: 'Something went wrong. Please try again later.' }, { status: 500 })
   }
 }

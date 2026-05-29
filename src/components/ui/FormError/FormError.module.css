@@ -1,7 +1,0 @@
-.error {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: var(--color-error);
-  display: block;
-  margin-top: var(--spacing-1);
-}

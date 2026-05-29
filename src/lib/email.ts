@@ -1,38 +1,38 @@
-import nodemailer from 'nodemailer'
-import VerificationEmail from '@/components/emails/VerificationEmail'
-import ResetPasswordEmail from '@/components/emails/ResetPasswordEmail'
+import { Resend } from 'resend'
+import VerificationEmail from '@/emails/VerificationEmail'
+import ResetPasswordEmail from '@/emails/ResetPasswordEmail'
 import { render } from '@react-email/components'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: Number(process.env.SMTP_PORT) === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-const fromAddress = process.env.SMTP_FROM || 'noreply@securegate.app'
+const fromAddress = process.env.RESEND_FROM || 'noreply@yourdomain.com'
 
-export async function sendVerificationEmail(email: string, name: string, token: string) {
+export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${process.env.NEXTAUTH_URL}/verify-email/${token}`
 
-  await transporter.sendMail({
+  const { error } = await resend.emails.send({
     from: fromAddress,
     to: email,
-    subject: 'Verify your SecureGate account',
-    html: await render(VerificationEmail({ verificationUrl, name })),
+    subject: 'Verify your email',
+    html: await render(VerificationEmail({ verificationUrl })),
   })
+
+  if (error) {
+    console.error('Failed to send verification email:', error)
+  }
 }
 
-export async function sendPasswordResetEmail(email: string, name: string, token: string) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`
+export async function sendResetEmail(email: string, token: string) {
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/${token}`
 
-  await transporter.sendMail({
+  const { error } = await resend.emails.send({
     from: fromAddress,
     to: email,
-    subject: 'Reset your SecureGate password',
-    html: await render(ResetPasswordEmail({ resetUrl, name })),
+    subject: 'Reset your password',
+    html: await render(ResetPasswordEmail({ resetUrl })),
   })
+
+  if (error) {
+    console.error('Failed to send reset email:', error)
+  }
 }
