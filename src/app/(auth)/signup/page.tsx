@@ -82,7 +82,7 @@ export default function SignupPage() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="rounded-lg bg-surface-card p-8 shadow-lg">
+      <div className="rounded-lg bg-surface-card p-8 shadow">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">Create your account</h1>
 
         {error && <Alert variant="error">{error}</Alert>}

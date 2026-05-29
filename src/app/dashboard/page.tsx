@@ -31,7 +31,7 @@ export default async function DashboardPage() {
           </div>
           <LogoutButton />
         </div>
-        <div className="rounded-lg bg-surface-card p-8 shadow-lg">
+        <div className="rounded-lg bg-surface-card p-8 shadow">
           <h2 className="mb-2 text-xl font-semibold text-white">
             Welcome back, {session.user.name || session.user.email}!
           </h2>

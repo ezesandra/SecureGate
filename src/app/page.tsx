@@ -8,7 +8,7 @@ export default function Home() {
         <p className="mb-8 text-gray-400">
           A production-ready authentication system. Click Get Started to create your account.
         </p>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <Link
             href="/signup"
             className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white text-center transition-colors hover:bg-blue-700"
@@ -17,7 +17,7 @@ export default function Home() {
           </Link>
           <Link
             href="/login"
-            className="w-full rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 text-center transition-colors hover:bg-gray-800"
+            className="mx-auto rounded-lg border border-gray-700 px-6 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
           >
             Log in
           </Link>

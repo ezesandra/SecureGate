@@ -3,7 +3,7 @@ import { sendVerificationEmail } from '@/lib/email'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const email = searchParams.get('email') || process.env.SMTP_USER || ''
+  const email = searchParams.get('email') || ''
   try {
     const token = `test-${Date.now()}`
     await sendVerificationEmail(email, token)

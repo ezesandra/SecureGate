@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      await sendResetEmail(email, token)
+      try { await sendResetEmail(email, token) } catch (e) { console.error('Reset email failed:', e) }
     }
 
     return NextResponse.json({

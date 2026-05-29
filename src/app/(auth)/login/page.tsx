@@ -9,9 +9,28 @@ import Button from '@/components/ui/Button'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validateEmail(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return 'Email address is required'
+  if (!emailRegex.test(trimmed)) return 'Enter a valid email address'
+  return null
+}
+
+function validatePassword(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return 'Password is required'
+  return null
+}
+
 function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
   const [showResetBanner, setShowResetBanner] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -24,12 +43,16 @@ function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setIsLoading(true)
     setError(null)
 
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
+    const emailErr = validateEmail(email)
+    const passwordErr = validatePassword(password)
+    setEmailError(emailErr)
+    setPasswordError(passwordErr)
+
+    if (emailErr || passwordErr) return
+
+    setIsLoading(true)
 
     const result = await signIn('credentials', {
       email,
@@ -48,7 +71,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="rounded-lg bg-surface-card p-8 shadow-lg">
+      <div className="rounded-lg bg-surface-card p-8 shadow">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">Sign in to SecureGate</h1>
 
         {error && (
@@ -78,6 +101,13 @@ function LoginForm() {
             required
             autoComplete="email"
             disabled={isLoading}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (emailError) setEmailError(validateEmail(e.target.value))
+            }}
+            onBlur={(e) => setEmailError(validateEmail(e.target.value))}
+            error={emailError || undefined}
           />
           <PasswordInput
             id="password"
@@ -86,6 +116,13 @@ function LoginForm() {
             required
             autoComplete="current-password"
             disabled={isLoading}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+              if (passwordError) setPasswordError(null)
+            }}
+            onBlur={(e) => setPasswordError(validatePassword(e.target.value))}
+            error={passwordError || undefined}
           />
           <Button type="submit" isLoading={isLoading} variant="primary">
             Sign in

@@ -35,7 +35,7 @@ function PendingContent() {
   }
 
   return (
-    <div className="w-full max-w-sm rounded-lg bg-surface-card p-8 text-center shadow-lg">
+    <div className="w-full max-w-sm rounded-lg bg-surface-card p-8 text-center shadow">
       <h1 className="mb-4 text-2xl font-bold text-white">Please verify your email before continuing</h1>
       <p className="mb-6 text-gray-400">
         We sent a verification link to your email. Please check your inbox and click the link to activate your account.

@@ -41,11 +41,16 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    await sendVerificationEmail(email, token)
+    try {
+      await sendVerificationEmail(email, token)
+    } catch (emailError) {
+      console.error('Verification email failed:', emailError)
+    }
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ error: 'Something went wrong. Please try again later.' }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

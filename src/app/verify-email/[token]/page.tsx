@@ -64,7 +64,7 @@ export default function VerifyEmailPage({ params }: { params: { token: string } 
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface p-4">
-      <div className="w-full max-w-sm rounded-lg bg-surface-card p-8 text-center shadow-lg">
+      <div className="w-full max-w-sm rounded-lg bg-surface-card p-8 text-center shadow">
         <h1 className="mb-6 text-2xl font-bold text-white">Email Verification</h1>
 
         {status === 'loading' && (
