@@ -1,4 +1,4 @@
-const required = ['DATABASE_URL', 'NEXTAUTH_URL', 'NEXTAUTH_SECRET', 'RESEND_API_KEY'] as const
+const required = ['DATABASE_URL', 'NEXTAUTH_URL', 'NEXTAUTH_SECRET'] as const
 
 export function validateEnv() {
   for (const key of required) {
