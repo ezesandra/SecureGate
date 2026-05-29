@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Spinner from '@/components/ui/Spinner'
 import Link from 'next/link'
 
-export default function VerifyEmailPage({ params }: { params: { token: string } }) {
-  const { token } = params
+export default function VerifyEmailPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = use(params)
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [expiredEmail, setExpiredEmail] = useState<string | null>(null)

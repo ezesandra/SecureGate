@@ -34,7 +34,7 @@ export async function sendVerificationEmail(email: string, token: string) {
     console.log('║        DEV: Verification Email              ║')
     console.log('╠══════════════════════════════════════════════╣')
     console.log(`║  To: ${email.padEnd(37)}║`)
-    console.log(`║  URL: ${verificationUrl.padEnd(35)}║`)
+    console.log(`║  URL: ${verificationUrl}`)
     console.log('╚══════════════════════════════════════════════╝')
     console.log('')
     return
@@ -58,7 +58,7 @@ export async function sendResetEmail(email: string, token: string) {
     console.log('║        DEV: Password Reset Email            ║')
     console.log('╠══════════════════════════════════════════════╣')
     console.log(`║  To: ${email.padEnd(37)}║`)
-    console.log(`║  URL: ${resetUrl.padEnd(37)}║`)
+    console.log(`║  URL: ${resetUrl}`)
     console.log('╚══════════════════════════════════════════════╝')
     console.log('')
     return
